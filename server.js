@@ -5,11 +5,12 @@ const app = express();
 //Connect Database
 connectDB();
 
-app.get('/', (req, res) => {
-  res.send('API is running');
-});
+//Body pursing middleware
+app.use(express.json({ extended: false }));
 
-//define Routes
+app.get('/', (req, res) => res.send('API is running'));
+
+//Define Routes
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/auth', require('./routes/api/auth'));
 app.use('/api/posts', require('./routes/api/posts'));
