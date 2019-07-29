@@ -12,7 +12,7 @@ module.exports = function(req, res, next) {
 
   try {
     //use received token and secret word to decode. Now, I can access to user inf
-    const decoded = jwt.verify(token, config.get('jwtToken'));
+    const decoded = jwt.verify(token, config.get('jwtSecret'));
     console.log('show me decoed token', decoded);
 
     req.user = decoded.user;

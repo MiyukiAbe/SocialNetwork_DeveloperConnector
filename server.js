@@ -13,8 +13,8 @@ app.get('/', (req, res) => res.send('API is running'));
 //Define Routes
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/auth', require('./routes/api/auth'));
-app.use('/api/posts', require('./routes/api/posts'));
 app.use('/api/profile', require('./routes/api/profile'));
+app.use('/api/posts', require('./routes/api/posts'));
 
 //process.env will look for an environment variable called "Port" to use when we deploy to Heroku that's gonna get
 //the port number and locally, I am using 5000

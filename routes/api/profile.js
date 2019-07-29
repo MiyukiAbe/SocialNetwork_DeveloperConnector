@@ -1,11 +1,29 @@
 const express = require('express');
 const router = express.Router();
+const auth = require('../../middleware/auth');
 
-//@route GET api/profile
-//@desc Test route
-//@access Public (to access this api, Token is not required)
-router.get('/', (req, res) => {
-  res.send('Profile Route');
+const Profile = require('../../models/Profile');
+const User = require('../../models/User');
+//@route GET api/profile/me
+//@desc Get current users profile
+//it requires to have a use token to access here so it is private
+//@access Private
+router.get('/me', auth, async (req, res) => {
+  try {
+    //grab specific user Profile by id on Profile Mode. Then, I can add info from User model as well.
+    const profile = await Profile.findOne({ user: req.user.id }).populate(
+      'user',
+      ['name', 'adatar']
+    );
+
+    if (!profile) {
+      return res.status(400).json({ msg: 'There is no profile for this user' });
+    }
+    res.json(profile);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
 });
 
 module.exports = router;
