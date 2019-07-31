@@ -49,7 +49,7 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    console.log('im checking if I get skills', req.body.skills);
+
     const {
       company,
       website,
@@ -76,8 +76,40 @@ router.post(
     if (githubusername) profileFields.githubusername = githubusername;
     if (skills) {
       profileFields.skills = skills.split(',').map(skill => skill.trim());
-      console.log('after trimed', profileFields.skills);
     }
+
+    //Build social object
+    profileFields.social = {};
+    if (youtube) profileFields.social.youtube = youtube;
+    if (facebook) profileFields.social.facebook = facebook;
+    if (twitter) profileFields.social.twitter = twitter;
+    if (instagram) profileFields.social.instagram = instagram;
+    if (linkedin) profileFields.social.linkedin = linkedin;
+
+    try {
+      let profile = await Profile.findOne({ user: req.user.id });
+
+      // It means this user exist. what I wanna do is update the existing
+      if (profile) {
+        profile = await Profile.findOneAndUpdate(
+          { user: req.user.id },
+          { $set: profileFields },
+          { new: true }
+        );
+
+        return res.json(profile);
+      }
+
+      //Create. If profile does not exist, I need to create a new profile
+      profile = new Profile(profileFields);
+
+      await profile.save();
+      res.json(profile);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    }
+
     res.send('hello hello');
   }
 );
